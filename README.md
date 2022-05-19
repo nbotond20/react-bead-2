@@ -186,20 +186,20 @@ Az egész projektet tömörítsd be, kliensestül, szerverestül, és azt tölts
 
 ## Pontozás
 
-Összesen 30 pont érhető el.
+Összesen 30 pont érhető el. (7/30)
 
-> - [ ] React használata (kötelező)
-> - [ ] Redux használata (kötelező)
-> - [ ] Navigáció megfelelően változik a be- és kijelentkezésnek megfelelően (1pt)
-> - [ ] Főoldal megjelenik (1pt)
+> - [x] React használata (kötelező)
+> - [x] Redux használata (kötelező)
+> - [x] Navigáció megfelelően változik a be- és kijelentkezésnek megfelelően (1pt)
+> - [x] Főoldal megjelenik (1pt)
 > - [ ] Feladatbank: megjelennek a feladatok a megfelelő tartalommal (1pt)
 > - [ ] Feladatbank: 10 feladat jelenik meg, előre-hátra lapozással (2pt)
 > - [ ] Feladatbank: feladatra kattintva megjelenik a feladat leírása (2pt)
 > - [ ] Feladatbank: bejelentkezett felhasználónál ha a feladat nincs kiválasztva, akkor megjelenik a "Kiválaszt" gomb (1pt)
 > - [ ] Feladatbank: bejelentkezett felhasználónál ha a feladat már ki van választva, akkor megjelenik a "Kiválasztva" felirat (1pt)
 > - [ ] Feladatbank: "Kiválaszt" gomb helyes működése (2pt)
-> - [ ] Regisztráció működik (1pt)
-> - [ ] Bejelentkezés működik (1pt)
+> - [x] Regisztráció működik (1pt)
+> - [x] Bejelentkezés működik (1pt)
 > - [ ] Feladatsoraim: csak bejelentkezve érhető el (1pt)
 > - [ ] Feladatsoraim: a felhasználóhoz tartozó feladatsorok megjelennek (1pt)
 > - [ ] Feladatsoraim: feladatsorra kattintva a feladatsor részletei megjelennek (1pt)
@@ -211,7 +211,7 @@ Az egész projektet tömörítsd be, kliensestül, szerverestül, és azt tölts
 > - [ ] Szerkesztett feladatsor: "Mentés" gomb helyes működése (2pt)
 > - [ ] Szerkesztett feladatsor: "Szerkesztés lezárása" gomb helyes működése (2pt)
 > - [ ] Profil: csak bejelentkezve érhető el, megfelelő tartalommal (1pt)
-> - [ ] Profil: Kijelentkezés gomb működik (1pt)
-> - [ ] Igényes megjelenés (2pt)
+> - [x] Profil: Kijelentkezés gomb működik (1pt)
+> - [x] Igényes megjelenés (2pt)
 > - [ ] 1 hét késés (-3pt)
 > - [ ] 2 hét késés (-6pt)
