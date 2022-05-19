@@ -1,12 +1,12 @@
-import style from './css/Home.module.css';
 import { useSelector } from 'react-redux';
 import { selectLoggedInUser } from '../../state/auth/authSlice';
+import CardContainer from '../utils/CardContainer';
 
 const Home = () => {
     const user = useSelector(selectLoggedInUser);
 
     return (
-        <div className={style.container}>
+        <CardContainer>
             <h1 style={{ textAlign: 'center' }}>
                 Welcome <span style={{color: 'rgb(25,118,210)'}}>{user !== null ? `${user.fullname}` : ''}</span> to the home page of the Task Manager!
             </h1>
@@ -435,7 +435,7 @@ const Home = () => {
                 <li>[ ] 1 hét késés (-3pt)</li>
                 <li>[ ] 2 hét késés (-6pt)</li>
             </ul>
-        </div>
+        </CardContainer>
     );
 };
 

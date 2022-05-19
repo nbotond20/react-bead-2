@@ -4,6 +4,7 @@ import RequireAuth from './components/auth/RequireAuth';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Home from './components/home/Home';
+import Tasks from './components/tasks/Tasks';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, selectLoggedInUser } from './state/auth/authSlice';
 import { useEffect } from 'react';
@@ -28,10 +29,26 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
-                    <Route path="tasks" element={<RequireAuth>asdasasda</RequireAuth>} />
-                    <Route path="my-tests" element={<RequireAuth>asdasasda</RequireAuth>} />
-                    <Route path="last-edited" element={<RequireAuth>asdasasda</RequireAuth>} />
-                    <Route path="profile" element={<RequireAuth>asdasasda</RequireAuth>} />
+                    <Route
+                        path="tasks"
+                        element={
+                            <RequireAuth>
+                                <Tasks />
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="my-tests"
+                        element={<RequireAuth>asdasasda</RequireAuth>}
+                    />
+                    <Route
+                        path="last-edited"
+                        element={<RequireAuth>asdasasda</RequireAuth>}
+                    />
+                    <Route
+                        path="profile"
+                        element={<RequireAuth>asdasasda</RequireAuth>}
+                    />
                 </Routes>
             </BrowserRouter>
         </>
