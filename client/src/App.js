@@ -5,9 +5,12 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Home from './components/home/Home';
 import Tasks from './components/tasks/Tasks';
-import { useDispatch, useSelector } from 'react-redux';
-import { login, selectLoggedInUser } from './state/auth/authSlice';
+import TaskLists from './components/tasklists/TaskLists';
+import { useDispatch } from 'react-redux';
+import { login } from './state/auth/authSlice';
 import { useEffect } from 'react';
+import My404Page from './components/my404page/My404Page';
+import Profile from './components/profile/Profile';
 
 function App() {
     const dispatch = useDispatch();
@@ -39,7 +42,11 @@ function App() {
                     />
                     <Route
                         path="my-tests"
-                        element={<RequireAuth>asdasasda</RequireAuth>}
+                        element={
+                            <RequireAuth>
+                                <TaskLists />
+                            </RequireAuth>
+                        }
                     />
                     <Route
                         path="last-edited"
@@ -47,8 +54,13 @@ function App() {
                     />
                     <Route
                         path="profile"
-                        element={<RequireAuth>asdasasda</RequireAuth>}
+                        element={
+                            <RequireAuth>
+                                <Profile />
+                            </RequireAuth>
+                        }
                     />
+                    <Route path="*" element={<My404Page />} />
                 </Routes>
             </BrowserRouter>
         </>

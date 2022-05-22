@@ -1,14 +1,21 @@
 import { useSelector } from 'react-redux';
 import { selectLoggedInUser } from '../../state/auth/authSlice';
 import CardContainer from '../utils/CardContainer';
+import useDocumentTitle from '../utils/useDocumentTitle';
 
 const Home = () => {
     const user = useSelector(selectLoggedInUser);
 
+    useDocumentTitle('Task-Manager - Home');
+
     return (
         <CardContainer>
             <h1 style={{ textAlign: 'center' }}>
-                Welcome <span style={{color: 'rgb(25,118,210)'}}>{user !== null ? `${user.fullname}` : ''}</span> to the home page of the Task Manager!
+                Welcome{' '}
+                <span style={{ color: 'rgb(25,118,210)' }}>
+                    {user !== null ? `${user.fullname}` : ''}
+                </span>{' '}
+                to the home page of the Task Manager!
             </h1>
             <h1>Feladatsorok alkalmazás</h1>
             <p>
@@ -258,41 +265,37 @@ const Home = () => {
             </ul>
             <h2>A kliens</h2>
             <p>
-                Az alkalmazást a <code>client</code> mappában kell elkészíteni.
+                Az alkalmazást a client mappában kell elkészíteni.
                 A mappa egyelőre egy teljesen friss Create-React-App telepítést
                 tartalmaz, a szükséges további függőségeket Nektek kell
                 hozzáadni. A nem szükséges dolgokat viszont nyugodtan ki is
                 törölheted!
             </p>
-            <pre>
-                <code>
-                    cd client
-                    <span>npm</span> install
-                    <span>npm</span> start
-                </code>
-            </pre>
+            <ul>
+                <li>cd client</li> 
+                <li>npm install</li>
+                <li>npm start</li>
+            </ul>
             <h2>REST API</h2>
             <p>
-                A szerver forráskódja a <code>rest-api</code> mappában
+                A szerver forráskódja a rest-api mappában
                 található. Telepíteni és indítani kell lokálisan:
             </p>
-            <pre>
-                <code>
-                    cd rest-api
-                    <span>npm</span> install
-                    <span>npm</span> start
-                </code>
-            </pre>
+            <ul>
+                <li>cd rest-api</li> 
+                <li>npm install</li>
+                <li>npm start</li>
+            </ul>
             <p>Három szolgáltatás van kivezetve:</p>
             <ul>
                 <li>
-                    <code>users</code>
+                    users
                 </li>
                 <li>
-                    <code>tasks</code>
+                    tasks
                 </li>
                 <li>
-                    <code>tasklists</code>
+                    tasklists
                 </li>
             </ul>
             <p>
@@ -324,14 +327,14 @@ const Home = () => {
             <p>
                 Innentől kipróbálhatók a végpontok. A felküldendő tartalmak a
                 Body részben vannak előkészítve. Az authentikációhoz tartozó JWT
-                token a <code>tasklists</code> gyűjtemény{' '}
-                <code>Authorization</code> fülén van elmentve, ott igény szerint
+                token a tasklists gyűjtemény{' '}
+                Authorization fülén van elmentve, ott igény szerint
                 cserélhető.
             </p>
             <h2>Adatbázis</h2>
             <p>
                 A mentett adatok egy lokális SQLite táblában jelennek meg:{' '}
-                <code>feladatsor_restapi.sqlite</code>. Ezt pl. a{' '}
+                feladatsor_restapi.sqlite. Ezt pl. a{' '}
                 <a href="https://sqlitebrowser.org/">DB Browser for SQLite</a>{' '}
                 programmal tudunk megnézni, módosítani.
             </p>
@@ -347,7 +350,7 @@ const Home = () => {
                 Az egész projektet tömörítsd be, kliensestül, szerverestül, és
                 azt töltsd föl.{' '}
                 <strong>
-                    Beadás (tömörítés) előtt a <code>node_modules</code>{' '}
+                    Beadás (tömörítés) előtt a node_modules{' '}
                     mappákat mindenképpen töröld!
                 </strong>
             </p>
@@ -357,78 +360,78 @@ const Home = () => {
                 <li>[ ] React használata (kötelező)</li>
                 <li>[ ] Redux használata (kötelező)</li>
                 <li>
-                [ ] Navigáció megfelelően változik a be- és kijelentkezésnek
+                    [ ] Navigáció megfelelően változik a be- és kijelentkezésnek
                     megfelelően (1pt)
                 </li>
                 <li>[ ] Főoldal megjelenik (1pt)</li>
                 <li>
-                [ ] Feladatbank: megjelennek a feladatok a megfelelő tartalommal
-                    (1pt)
+                    [ ] Feladatbank: megjelennek a feladatok a megfelelő
+                    tartalommal (1pt)
                 </li>
                 <li>
-                [ ] Feladatbank: 10 feladat jelenik meg, előre-hátra lapozással
-                    (2pt)
+                    [ ] Feladatbank: 10 feladat jelenik meg, előre-hátra
+                    lapozással (2pt)
                 </li>
                 <li>
-                [ ] Feladatbank: feladatra kattintva megjelenik a feladat
+                    [ ] Feladatbank: feladatra kattintva megjelenik a feladat
                     leírása (2pt)
                 </li>
                 <li>
-                [ ] Feladatbank: bejelentkezett felhasználónál ha a feladat
+                    [ ] Feladatbank: bejelentkezett felhasználónál ha a feladat
                     nincs kiválasztva, akkor megjelenik a &quot;Kiválaszt&quot;
                     gomb (1pt)
                 </li>
                 <li>
-                [ ] Feladatbank: bejelentkezett felhasználónál ha a feladat már
-                    ki van választva, akkor megjelenik a &quot;Kiválasztva&quot;
-                    felirat (1pt)
+                    [ ] Feladatbank: bejelentkezett felhasználónál ha a feladat
+                    már ki van választva, akkor megjelenik a
+                    &quot;Kiválasztva&quot; felirat (1pt)
                 </li>
                 <li>
-                [ ] Feladatbank: &quot;Kiválaszt&quot; gomb helyes működése
+                    [ ] Feladatbank: &quot;Kiválaszt&quot; gomb helyes működése
                     (2pt)
                 </li>
                 <li>[ ] Regisztráció működik (1pt)</li>
                 <li>[ ] Bejelentkezés működik (1pt)</li>
                 <li>[ ] Feladatsoraim: csak bejelentkezve érhető el (1pt)</li>
                 <li>
-                [ ] Feladatsoraim: a felhasználóhoz tartozó feladatsorok
+                    [ ] Feladatsoraim: a felhasználóhoz tartozó feladatsorok
                     megjelennek (1pt)
                 </li>
                 <li>
-                [ ] Feladatsoraim: feladatsorra kattintva a feladatsor részletei
-                    megjelennek (1pt)
+                    [ ] Feladatsoraim: feladatsorra kattintva a feladatsor
+                    részletei megjelennek (1pt)
                 </li>
                 <li>
-                [ ] Feladatsoraim: &quot;Szerkeszt&quot; gomb helyes működése
-                    (1pt)
-                </li>
-                <li>
-                [ ] Feladatsoraim: &quot;Új feladatsor&quot; gomb helyes
+                    [ ] Feladatsoraim: &quot;Szerkeszt&quot; gomb helyes
                     működése (1pt)
                 </li>
                 <li>
-                [ ] Szerkesztett feladatsor: csak bejelentkezve érhető el és ha
-                    van szerkesztésre jelölt feladatsor (1pt)
+                    [ ] Feladatsoraim: &quot;Új feladatsor&quot; gomb helyes
+                    működése (1pt)
                 </li>
                 <li>
-                [ ] Szerkesztett feladatsor: a megjelenített adatok megfelelőek
-                    (1pt)
+                    [ ] Szerkesztett feladatsor: csak bejelentkezve érhető el és
+                    ha van szerkesztésre jelölt feladatsor (1pt)
                 </li>
                 <li>
-                [ ] Szerkesztett feladatsor: a jelölt adatok szerkeszthetők
+                    [ ] Szerkesztett feladatsor: a megjelenített adatok
+                    megfelelőek (1pt)
+                </li>
+                <li>
+                    [ ] Szerkesztett feladatsor: a jelölt adatok szerkeszthetők
                     (2pt)
                 </li>
                 <li>
-                [ ] Szerkesztett feladatsor: &quot;Mentés&quot; gomb helyes
+                    [ ] Szerkesztett feladatsor: &quot;Mentés&quot; gomb helyes
                     működése (2pt)
                 </li>
                 <li>
-                [ ] Szerkesztett feladatsor: &quot;Szerkesztés lezárása&quot;
-                    gomb helyes működése (2pt)
+                    [ ] Szerkesztett feladatsor: &quot;Szerkesztés
+                    lezárása&quot; gomb helyes működése (2pt)
                 </li>
                 <li>
-                    [ ] Profil: csak bejelentkezve érhető el, megfelelő tartalommal
-                    (1pt)
+                    [ ] Profil: csak bejelentkezve érhető el, megfelelő
+                    tartalommal (1pt)
                 </li>
                 <li>[ ] Profil: Kijelentkezés gomb működik (1pt)</li>
                 <li>[ ] Igényes megjelenés (2pt)</li>

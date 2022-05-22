@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link } from 'react-router-dom';
 import AuthStatus from '../auth/AuthStatus';
-import { login, logout, selectLoggedInUser } from '../../state/auth/authSlice';
+import { logout, selectLoggedInUser } from '../../state/auth/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 const linkStyle = {
@@ -155,42 +155,42 @@ const NavBar = () => {
                     >
                         {user ? (
                             <>
-                                <Button
-                                    onClick={handleCloseNavMenu}
-                                    sx={{
-                                        my: 2,
-                                        color: 'white',
-                                        display: 'block'
-                                    }}
-                                >
-                                    <Link to={'/tasks'} style={linkStyle}>
+                                <Link to={'/tasks'} style={linkStyle}>
+                                    <Button
+                                        onClick={handleCloseNavMenu}
+                                        sx={{
+                                            my: 2,
+                                            color: 'white',
+                                            display: 'block'
+                                        }}
+                                    >
                                         Tasks
-                                    </Link>
-                                </Button>
-                                <Button
-                                    onClick={handleCloseNavMenu}
-                                    sx={{
-                                        my: 2,
-                                        color: 'white',
-                                        display: 'block'
-                                    }}
-                                >
-                                    <Link to={'/my-tests'} style={linkStyle}>
+                                    </Button>
+                                </Link>
+                                <Link to={'/my-tests'} style={linkStyle}>
+                                    <Button
+                                        onClick={handleCloseNavMenu}
+                                        sx={{
+                                            my: 2,
+                                            color: 'white',
+                                            display: 'block'
+                                        }}
+                                    >
                                         My Tests
-                                    </Link>
-                                </Button>
-                                <Button
-                                    onClick={handleCloseNavMenu}
-                                    sx={{
-                                        my: 2,
-                                        color: 'white',
-                                        display: 'block'
-                                    }}
-                                >
-                                    <Link to={'/last-edited'} style={linkStyle}>
+                                    </Button>
+                                </Link>
+                                <Link to={'/last-edited'} style={linkStyle}>
+                                    <Button
+                                        onClick={handleCloseNavMenu}
+                                        sx={{
+                                            my: 2,
+                                            color: 'white',
+                                            display: 'block'
+                                        }}
+                                    >
                                         Last Edited
-                                    </Link>
-                                </Button>
+                                    </Button>
+                                </Link>
                             </>
                         ) : (
                             ''
@@ -249,8 +249,7 @@ const NavBar = () => {
                                 sx={{ p: 0 }}
                             >
                                 <Avatar
-                                    alt="Remy Sharp"
-                                    src="/static/images/avatar/2.jpg"
+                                    children={user ? `${user?.fullname.split(' ')[0][0]}${user?.fullname.split(' ')[1][0]}` : ''}
                                 />
                             </IconButton>
                         </Tooltip>

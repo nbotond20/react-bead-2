@@ -1,0 +1,15 @@
+.container{
+    display:flex;
+    justify-content:center;
+    flex-direction: column !important;
+}
+
+.title{
+    font-size: max(15vw, 10rem);
+    font-weight: bold;
+    margin: 0;
+}
+
+.description{
+    text-align: center;
+}
