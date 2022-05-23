@@ -265,38 +265,32 @@ const Home = () => {
             </ul>
             <h2>A kliens</h2>
             <p>
-                Az alkalmazást a client mappában kell elkészíteni.
-                A mappa egyelőre egy teljesen friss Create-React-App telepítést
+                Az alkalmazást a client mappában kell elkészíteni. A mappa
+                egyelőre egy teljesen friss Create-React-App telepítést
                 tartalmaz, a szükséges további függőségeket Nektek kell
                 hozzáadni. A nem szükséges dolgokat viszont nyugodtan ki is
                 törölheted!
             </p>
             <ul>
-                <li>cd client</li> 
+                <li>cd client</li>
                 <li>npm install</li>
                 <li>npm start</li>
             </ul>
             <h2>REST API</h2>
             <p>
-                A szerver forráskódja a rest-api mappában
-                található. Telepíteni és indítani kell lokálisan:
+                A szerver forráskódja a rest-api mappában található. Telepíteni
+                és indítani kell lokálisan:
             </p>
             <ul>
-                <li>cd rest-api</li> 
+                <li>cd rest-api</li>
                 <li>npm install</li>
                 <li>npm start</li>
             </ul>
             <p>Három szolgáltatás van kivezetve:</p>
             <ul>
-                <li>
-                    users
-                </li>
-                <li>
-                    tasks
-                </li>
-                <li>
-                    tasklists
-                </li>
+                <li>users</li>
+                <li>tasks</li>
+                <li>tasklists</li>
             </ul>
             <p>
                 A végpontok leírását és kipróbálását úgy tehetitek meg
@@ -327,9 +321,8 @@ const Home = () => {
             <p>
                 Innentől kipróbálhatók a végpontok. A felküldendő tartalmak a
                 Body részben vannak előkészítve. Az authentikációhoz tartozó JWT
-                token a tasklists gyűjtemény{' '}
-                Authorization fülén van elmentve, ott igény szerint
-                cserélhető.
+                token a tasklists gyűjtemény Authorization fülén van elmentve,
+                ott igény szerint cserélhető.
             </p>
             <h2>Adatbázis</h2>
             <p>
@@ -350,8 +343,8 @@ const Home = () => {
                 Az egész projektet tömörítsd be, kliensestül, szerverestül, és
                 azt töltsd föl.{' '}
                 <strong>
-                    Beadás (tömörítés) előtt a node_modules{' '}
-                    mappákat mindenképpen töröld!
+                    Beadás (tömörítés) előtt a node_modules mappákat
+                    mindenképpen töröld!
                 </strong>
             </p>
             <h2>Pontozás</h2>

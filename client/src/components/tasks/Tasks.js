@@ -5,11 +5,18 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useGetTasksQuery } from '../../state/tasks/tasksApiSlice';
-import { Alert, Box, Button, CircularProgress, Grow, Skeleton } from '@mui/material';
+import {
+    Alert,
+    Box,
+    Button,
+    CircularProgress,
+    Grow,
+    Skeleton,
+} from '@mui/material';
 import style from './css/Tasks.module.css';
 import PaginationRounded from '../utils/PaginationRounded';
-import { Container } from '@mui/system';
 import useDocumentTitle from '../utils/useDocumentTitle';
+import CardContainer from '../utils/CardContainer';
 
 const Loading = ({ count }) => {
     const list = Array.from(Array(count).keys());
@@ -23,7 +30,7 @@ const Loading = ({ count }) => {
                     {...(true ? { timeout: 250 * index } : {})}
                     key={index}
                 >
-                    <Accordion>
+                    <Accordion sx={{ border: 'none' }}>
                         <AccordionSummary>
                             <Typography sx={{ width: '33%', flexShrink: 0 }}>
                                 <Skeleton />
@@ -56,16 +63,17 @@ const Loading = ({ count }) => {
 export default function Tasks() {
     useDocumentTitle('Task-Manager - Tasks');
     const itemPerPage = 10;
-    const loadingTime = 1500
-
+    const loadingTime = 1500;
+    
+    const [page, setPage] = React.useState(1);
     const { data, isLoading } = useGetTasksQuery();
+    console.log(data);
     const [expanded, setExpanded] = React.useState(false);
     const [currentData, setCurrentData] = React.useState(
         data ? data.slice(0, itemPerPage) : []
     );
 
     const [loading, setLoading] = React.useState(true);
-    const [page, setPage] = React.useState(1);
 
     React.useEffect(() => {
         if (data) {
@@ -100,22 +108,13 @@ export default function Tasks() {
     };
 
     return (
-        <Container
-            sx={{
-                width: '85%',
-                marginTop: '2em',
-                marginBottom: '2em',
-                backgroundColor: '#fff',
-                borderRadius: '10px',
-                boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.5)',
-                position: 'relative',
-                padding: '1em'
-            }}
-        >   
+        <CardContainer>
             <h1 style={{ textAlign: 'center', margin: '0.5 0' }}>Tasks</h1>
-            {(currentData?.length <= 0) && !loading && <Alert severity="warning">
-                There are no tasks available - create one!
-            </Alert>}
+            {currentData?.length <= 0 && !loading && (
+                <Alert severity="warning">
+                    There are no tasks available - create one!
+                </Alert>
+            )}
             {!loading &&
                 currentData?.map((task, index) => (
                     <Grow
@@ -169,7 +168,9 @@ export default function Tasks() {
                                 </Button>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <Typography sx={{ color: 'text.secondary' }}>{task.description}</Typography>
+                                <Typography sx={{ color: 'text.secondary' }}>
+                                    {task.description}
+                                </Typography>
                             </AccordionDetails>
                         </Accordion>
                     </Grow>
@@ -197,6 +198,6 @@ export default function Tasks() {
                     page={page}
                 />
             </div>
-        </Container>
+        </CardContainer>
     );
 }

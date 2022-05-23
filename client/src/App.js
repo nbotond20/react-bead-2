@@ -11,6 +11,7 @@ import { login } from './state/auth/authSlice';
 import { useEffect } from 'react';
 import My404Page from './components/my404page/My404Page';
 import Profile from './components/profile/Profile';
+import Edit from './components/edit/Edit';
 
 function App() {
     const dispatch = useDispatch();
@@ -50,7 +51,7 @@ function App() {
                     />
                     <Route
                         path="last-edited"
-                        element={<RequireAuth>asdasasda</RequireAuth>}
+                        element={<RequireAuth><Edit/></RequireAuth>}
                     />
                     <Route
                         path="profile"

@@ -6,8 +6,10 @@ import { login } from '../../state/auth/authSlice';
 import { useLoginMutation } from '../../state/auth/authApiSlice';
 import style from './css/Login.module.css';
 import CenterContainer from '../utils/CenterContainer';
+import useDocumentTitle from '../utils/useDocumentTitle';
 
 const Login = () => {
+    useDocumentTitle('Task-Manager - Login');
     const [data, setData] = useState({
         username: '',
         password: ''

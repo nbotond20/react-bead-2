@@ -5,6 +5,8 @@ const transformTasklist = (tasklist) => ({
   ...tasklist,
   tasks: tasklist.tasks.map((task) => ({
     id: task.id,
+    title: task.title,
+    description: task.description,
     notes: task.tasklists_tasks.notes,
     points: task.tasklists_tasks.points,
   })),

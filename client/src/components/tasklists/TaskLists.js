@@ -9,10 +9,8 @@ import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useGetTasksQuery } from '../../state/tasks/tasksApiSlice';
@@ -22,11 +20,10 @@ import { selectLoggedInUser } from '../../state/auth/authSlice';
 import { v4 } from 'uuid';
 import EditIcon from '@mui/icons-material/Edit';
 import useDocumentTitle from '../utils/useDocumentTitle';
+import CardContainer from '../utils/CardContainer';
 
 const Row = ({ row, index, tasks, children }) => {
     const [open, setOpen] = React.useState(false);
-
-    const taskQuery = tasks ? { ...tasks.map((t) => ({ [t.id]: t })) } : {};
 
     return (
         <>
@@ -141,23 +138,14 @@ const Row = ({ row, index, tasks, children }) => {
                                                                 color: 'text.secondary'
                                                             }}
                                                         >
-                                                            {Object.values(
-                                                                taskQuery[
-                                                                    task.id
-                                                                ] || {}
-                                                            )[0]?.title || ''}
+                                                            {task.title}
                                                         </TableCell>
                                                         <TableCell
                                                             sx={{
                                                                 color: 'text.secondary'
                                                             }}
                                                         >
-                                                            {Object.values(
-                                                                taskQuery[
-                                                                    task.id
-                                                                ] || {}
-                                                            )[0]?.description ||
-                                                                ''}
+                                                            {task.description}
                                                         </TableCell>
                                                         <TableCell
                                                             align="right"
@@ -186,7 +174,7 @@ const Row = ({ row, index, tasks, children }) => {
                                                     align="right"
                                                     sx={{ fontWeight: 'bold' }}
                                                 >
-                                                    {row.tasks.reduce(
+                                                    Summary: {row.tasks.reduce(
                                                         (acc, task) =>
                                                             acc + task.points,
                                                         0
@@ -256,21 +244,7 @@ const TaskLists = () => {
     };
 
     return (
-        <TableContainer
-            component={Paper}
-            sx={{
-                maxWidth: '85%',
-                width: '85%',
-                margin: 'auto',
-                marginTop: '2em',
-                marginBottom: '2em',
-                backgroundColor: '#fff',
-                borderRadius: '10px',
-                boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.5)',
-                position: 'relative',
-                padding: '1em'
-            }}
-        >
+        <CardContainer>
             <h1
                 style={{
                     textAlign: 'center',
@@ -353,7 +327,7 @@ const TaskLists = () => {
                     page={page}
                 />
             </div>
-        </TableContainer>
+        </CardContainer>
     );
 };
 

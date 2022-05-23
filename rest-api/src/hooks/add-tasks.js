@@ -10,7 +10,7 @@ module.exports = (options = {}) => {
       include: [
         {
           model: tasks,
-          attributes: ["id"],
+          attributes: ["id", "title", "description"],
           through: {
             attributes: ["notes", "points"],
           },

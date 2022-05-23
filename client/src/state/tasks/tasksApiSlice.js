@@ -30,8 +30,8 @@ export const tasksApiSlice = createApi({
             transformResponse: (response) => response.data
         }),
         getTasksRange: builder.query({
-            query: (skip, limit) => ({
-                url: `tasks?skip=${skip}&limit=${limit}`
+            query: (params) => ({
+                url: 'tasks?$skip='+params.skip+'&$limit='+params.limit
             }),
             transformResponse: (response) => response.data
         }),
