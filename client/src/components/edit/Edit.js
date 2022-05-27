@@ -3,10 +3,19 @@ import { clear, selectEdit, updateTasklist } from '../../state/edit/editSlice';
 import {
     Alert,
     Button,
-    FormControlLabel,
+    Chip,
+    FilledInput,
+    FormControl,
+    InputLabel,
+    Paper,
     Snackbar,
     Switch,
-    TextField
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
 } from '@mui/material';
 import CardContainer from '../utils/CardContainer';
 import { useEffect, useState } from 'react';
@@ -15,14 +24,13 @@ import {
     useCreateTaskListMutation,
     useModifyTaskListMutation
 } from '../../state/takskslists/tasksListsApiSlice';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Edit = () => {
     const dispatch = useDispatch();
     const editing = useSelector(selectEdit);
 
     const [state, setSate] = useState({
-        error: false,
         id: {
             value: editing?.id ? editing.id : null
         },
@@ -66,10 +74,12 @@ const Edit = () => {
 
     const [openSuccessAlert, setOpenSuccessAlert] = useState(false);
 
+    const [error, setError] = useState(false);
+
     const navigate = useNavigate();
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!state.error) {
+        if (state.title.value !== '') {
             if (state.createdAt.value === '') {
                 await createTaskList({
                     strategy: 'local',
@@ -90,12 +100,14 @@ const Edit = () => {
                     }
                 }).unwrap();
             }
+            setOpenSuccessAlert(true);
+            dispatch(clear());
+            setTimeout(() => {
+                navigate('/tasklists');
+            }, 1000);
+        } else {
+            setError(true);
         }
-        setOpenSuccessAlert(true);
-        dispatch(clear());
-        setTimeout(() => {
-            navigate('/tasklists');
-        }, 1000);
     };
 
     const handleToggle = (e) => {
@@ -140,126 +152,285 @@ const Edit = () => {
             </Snackbar>
             <CardContainer>
                 <form onSubmit={(e) => handleSubmit(e)}>
-                    <TextField
-                        id="outlined-basic"
-                        label="Title"
-                        variant="outlined"
-                        value={state.title.value}
-                        name="title"
-                        onChange={(e) =>
-                            setSate({
-                                ...state,
-                                title: { ...state.title, value: e.target.value }
-                            })
-                        }
-                    />
-                    <TextField
-                        id="outlined-basic"
-                        label="Description"
-                        variant="outlined"
-                        value={state.description.value}
-                        name="description"
-                        onChange={(e) =>
-                            setSate({
-                                ...state,
-                                description: {
-                                    ...state.description,
-                                    value: e.target.value
-                                }
-                            })
-                        }
-                    />
-                    <FormControlLabel
-                        control={
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            marginBottom: '2rem'
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                width: '80%'
+                            }}
+                        >
+                            <FormControl fullWidth variant="filled">
+                                <InputLabel htmlFor="title">Title</InputLabel>
+                                <FilledInput
+                                    id="title"
+                                    value={state.title.value}
+                                    name="title"
+                                    error={error}
+                                    required
+                                    onChange={(e) =>
+                                        setSate({
+                                            ...state,
+                                            title: {
+                                                ...state.title,
+                                                value: e.target.value
+                                            }
+                                        })
+                                    }
+                                />
+                            </FormControl>
+                            <FormControl
+                                fullWidth
+                                variant="filled"
+                                sx={{
+                                    marginTop: '1rem'
+                                }}
+                            >
+                                <InputLabel htmlFor="description">
+                                    Description
+                                </InputLabel>
+                                <FilledInput
+                                    id="description"
+                                    value={state.description.value}
+                                    name="description"
+                                    multiline
+                                    maxRows={5}
+                                    onChange={(e) =>
+                                        setSate({
+                                            ...state,
+                                            description: {
+                                                ...state.description,
+                                                value: e.target.value
+                                            }
+                                        })
+                                    }
+                                />
+                            </FormControl>
+                        </div>
+
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                width: '20%',
+                                height: '100%',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginLeft: '1  em'
+                            }}
+                        >
                             <Switch
                                 checked={state.status.value === 'published'}
                                 name="status"
                                 onChange={handleToggle}
                             />
-                        }
-                        label="Published"
-                    />
-                    <span>
-                        {state.createdAt.value && (
-                            <ReactTimeAgo
-                                date={new Date(state.createdAt.value)}
-                            />
-                        )}
-                    </span>
-                    <span>
-                        {state.updatedAt.value && (
-                            <ReactTimeAgo
-                                date={new Date(state.updatedAt.value)}
-                            />
-                        )}
-                    </span>
-
-                    <div>
-                        {state?.tasks &&
-                            state.tasks.map((task) => (
-                                <div key={task.id}>
-                                    <span>{task.title}</span>
-                                    <span>{task.description}</span>
-                                    <TextField
-                                        id="outlined-basic"
-                                        label="Notes"
-                                        variant="outlined"
-                                        value={task.notes}
-                                        name="notes"
-                                        onChange={(e) =>
-                                            setSate({
-                                                ...state,
-                                                tasks: state.tasks.map((t) =>
-                                                    t.id === task.id
-                                                        ? {
-                                                              ...t,
-                                                              notes: e.target
-                                                                  .value
-                                                          }
-                                                        : t
-                                                )
-                                            })
-                                        }
-                                    />
-                                    <TextField
-                                        id="outlined-basic"
-                                        label="Points"
-                                        variant="outlined"
-                                        value={task.points}
-                                        name="points"
-                                        onChange={(e) =>
-                                            setSate({
-                                                ...state,
-                                                tasks: state.tasks.map((t) =>
-                                                    t.id === task.id
-                                                        ? {
-                                                              ...t,
-                                                              points: e.target
-                                                                  .value
-                                                                  ? parseInt(
-                                                                        e.target
-                                                                            .value
-                                                                    )
-                                                                  : 0
-                                                          }
-                                                        : t
-                                                )
-                                            })
-                                        }
-                                    />
-                                </div>
-                            ))}
+                            {state.status.value === 'published' ? (
+                                <Chip
+                                    label="Published"
+                                    color="success"
+                                    variant="outlined"
+                                />
+                            ) : (
+                                <Chip
+                                    label="Draft"
+                                    color="primary"
+                                    variant="outlined"
+                                />
+                            )}
+                        </div>
                     </div>
 
-                    <Button type="submit" variant="contained">
-                        Save
-                    </Button>
-                    <Button
-                        variant="contained"
-                        onClick={() => navigate('/tasklists')}
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-evenly',
+                            marginBottom: '2rem'
+                        }}
                     >
-                        Finish Later
-                    </Button>
+                        <span>
+                            Created at:
+                            {state.createdAt.value && (
+                                <span
+                                    style={{
+                                        color: '#666'
+                                    }}
+                                >
+                                    {' ' +
+                                        new Date(
+                                            state.createdAt.value
+                                        ).toLocaleString()}
+                                </span>
+                            )}
+                        </span>
+                        <span>
+                            Updated at:
+                            {state.updatedAt.value && (
+                                <span
+                                    style={{
+                                        color: '#666'
+                                    }}
+                                >
+                                    {' '}
+                                    <ReactTimeAgo
+                                        date={new Date(state.updatedAt.value)}
+                                    />
+                                </span>
+                            )}
+                        </span>
+                    </div>
+
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-evenly',
+                            marginBottom: '2rem'
+                        }}
+                    >
+                        <TableContainer component={Paper}>
+                            {state?.tasks.length > 0 ? (
+                                <Table aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell align="left">
+                                                Title
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                Description
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                Notes
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                Points
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {state?.tasks &&
+                                            state.tasks.map((task) => (
+                                                <TableRow key={task.id}>
+                                                    <TableCell align="left">
+                                                        {task.title}
+                                                    </TableCell>
+                                                    <TableCell align="left">
+                                                        {task.description}
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        <FormControl variant="filled">
+                                                            <InputLabel htmlFor="notes">
+                                                                Notes
+                                                            </InputLabel>
+                                                            <FilledInput
+                                                                id="notes"
+                                                                value={
+                                                                    task.notes
+                                                                }
+                                                                name="notes"
+                                                                multiline
+                                                                maxRows={3}
+                                                                onChange={(e) =>
+                                                                    setSate({
+                                                                        ...state,
+                                                                        tasks: state.tasks.map(
+                                                                            (
+                                                                                t
+                                                                            ) =>
+                                                                                t.id ===
+                                                                                task.id
+                                                                                    ? {
+                                                                                          ...t,
+                                                                                          notes: e
+                                                                                              .target
+                                                                                              .value
+                                                                                      }
+                                                                                    : t
+                                                                        )
+                                                                    })
+                                                                }
+                                                            />
+                                                        </FormControl>
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        <FormControl variant="filled">
+                                                            <InputLabel htmlFor="points">
+                                                                Points
+                                                            </InputLabel>
+                                                            <FilledInput
+                                                                id="points"
+                                                                value={
+                                                                    task.points
+                                                                }
+                                                                name="points"
+                                                                onChange={(e) =>
+                                                                    setSate({
+                                                                        ...state,
+                                                                        tasks: state.tasks.map(
+                                                                            (
+                                                                                t
+                                                                            ) =>
+                                                                                t.id ===
+                                                                                task.id
+                                                                                    ? {
+                                                                                          ...t,
+                                                                                          points: e
+                                                                                              .target
+                                                                                              .value
+                                                                                              ? parseInt(
+                                                                                                    e
+                                                                                                        .target
+                                                                                                        .value
+                                                                                                )
+                                                                                              : 0
+                                                                                      }
+                                                                                    : t
+                                                                        )
+                                                                    })
+                                                                }
+                                                            />
+                                                        </FormControl>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                    </TableBody>
+                                </Table>
+                            ) : (
+                                <Alert severity="warning">
+                                    There are no tasks added yet -{' '}
+                                    <Link to="/tasks">add one</Link>!
+                                </Alert>
+                            )}
+                        </TableContainer>
+                    </div>
+
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            gap: '2rem'
+                        }}
+                    >
+                        <Button type="submit" variant="contained">
+                            Save
+                        </Button>
+                        <Button
+                            variant="contained"
+                            onClick={() => navigate('/tasklists')}
+                        >
+                            Back
+                        </Button>
+                    </div>
                 </form>
             </CardContainer>
         </>

@@ -11,7 +11,7 @@ import {
     Button,
     CircularProgress,
     Grow,
-    Skeleton,
+    Skeleton
 } from '@mui/material';
 import style from './css/Tasks.module.css';
 import PaginationRounded from '../utils/PaginationRounded';
@@ -33,8 +33,20 @@ const Loading = ({ count }) => {
                     {...(true ? { timeout: 250 * index } : {})}
                     key={index}
                 >
-                    <Accordion sx={{ border: 'none' }}>
-                        <AccordionSummary>
+                    <Accordion
+                        sx={{
+                            boxShadow: 'none',
+                            margin: '0',
+                            border: 'none',
+                            backgroundColor: '#fafafa'
+                        }}
+                    >
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            sx={{
+                                boxShadow: 'none'
+                            }}
+                        >
                             <Typography sx={{ width: '33%', flexShrink: 0 }}>
                                 <Skeleton />
                             </Typography>
@@ -71,10 +83,10 @@ export default function Tasks() {
     useDocumentTitle('Task-Manager - Tasks');
     const itemPerPage = 10;
     const loadingTime = 1500;
-    
+
     const [page, setPage] = React.useState(1);
     const { data, isLoading } = useGetTasksQuery();
-    
+
     const [expanded, setExpanded] = React.useState(false);
     const [currentData, setCurrentData] = React.useState(
         data ? data.slice(0, itemPerPage) : []
@@ -98,13 +110,13 @@ export default function Tasks() {
 
     const handleClick = (e, task) => {
         e.stopPropagation();
-        if(editing !== null){
+        if (editing !== null) {
             dispatch(
                 addTask({
-                    task: task,
+                    task: { ...task, notes: '', points: 0 }
                 })
             );
-        }else{
+        } else {
             dispatch(
                 setEditing({
                     taskList: {
@@ -112,7 +124,7 @@ export default function Tasks() {
                         description: null,
                         status: 'draft',
                         userId: user.id,
-                        tasks: [task]
+                        tasks: [{ ...task, notes: '', points: 0 }]
                     }
                 })
             );
@@ -181,7 +193,11 @@ export default function Tasks() {
                                 </Typography>
                                 <Typography sx={{ color: 'text.secondary' }}>
                                     {!(expanded === `panel${index}}`)
-                                        ? `${task.description.slice(0, 25)}...`
+                                        ? `${task.description.slice(0, 25)}${
+                                              task.description.length > 25
+                                                  ? '...'
+                                                  : ''
+                                          }`
                                         : ''}
                                 </Typography>
                                 <Box flexGrow={1} />
@@ -189,9 +205,19 @@ export default function Tasks() {
                                     sx={{ margin: 'auto', zIndex: '1' }}
                                     variant="contained"
                                     onClick={(e) => handleClick(e, task)}
-                                    disabled={editing?.tasks.find(t => t.id === task.id) === undefined ? false : true}
+                                    disabled={
+                                        editing?.tasks.find(
+                                            (t) => t.id === task.id
+                                        ) === undefined
+                                            ? false
+                                            : true
+                                    }
                                 >
-                                    {editing?.tasks.find(t => t.id === task.id) ? 'Selected' : 'Select'}
+                                    {editing?.tasks.find(
+                                        (t) => t.id === task.id
+                                    )
+                                        ? 'Selected'
+                                        : 'Select'}
                                 </Button>
                             </AccordionSummary>
                             <AccordionDetails>

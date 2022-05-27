@@ -365,7 +365,7 @@ const TaskLists = () => {
     const [deleteTaskList] = useDeleteTaskListMutation();
     const handleDeleteFromRow = async (taskListID) => {
         await deleteTaskList(taskListID);
-        if(editing.id === taskListID) {
+        if(editing?.id === taskListID) {
             dispatch(clear());
         }
         setOpenSuccesDeleteAlert(true);
