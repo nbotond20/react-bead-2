@@ -17,6 +17,9 @@ import style from './css/Tasks.module.css';
 import PaginationRounded from '../utils/PaginationRounded';
 import useDocumentTitle from '../utils/useDocumentTitle';
 import CardContainer from '../utils/CardContainer';
+import { selectLoggedInUser } from '../../state/auth/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addTask, selectEdit, setEditing } from '../../state/edit/editSlice';
 
 const Loading = ({ count }) => {
     const list = Array.from(Array(count).keys());
@@ -61,13 +64,17 @@ const Loading = ({ count }) => {
 };
 
 export default function Tasks() {
+    const user = useSelector(selectLoggedInUser);
+    const editing = useSelector(selectEdit);
+    const dispatch = useDispatch();
+
     useDocumentTitle('Task-Manager - Tasks');
     const itemPerPage = 10;
     const loadingTime = 1500;
     
     const [page, setPage] = React.useState(1);
     const { data, isLoading } = useGetTasksQuery();
-    console.log(data);
+    
     const [expanded, setExpanded] = React.useState(false);
     const [currentData, setCurrentData] = React.useState(
         data ? data.slice(0, itemPerPage) : []
@@ -89,8 +96,27 @@ export default function Tasks() {
         setExpanded(isExpanded ? panel : false);
     };
 
-    const handleClick = (e) => {
+    const handleClick = (e, task) => {
         e.stopPropagation();
+        if(editing !== null){
+            dispatch(
+                addTask({
+                    task: task,
+                })
+            );
+        }else{
+            dispatch(
+                setEditing({
+                    taskList: {
+                        title: null,
+                        description: null,
+                        status: 'draft',
+                        userId: user.id,
+                        tasks: [task]
+                    }
+                })
+            );
+        }
     };
 
     const handlePageChange = (event, value) => {
@@ -162,9 +188,10 @@ export default function Tasks() {
                                 <Button
                                     sx={{ margin: 'auto', zIndex: '1' }}
                                     variant="contained"
-                                    onClick={handleClick}
+                                    onClick={(e) => handleClick(e, task)}
+                                    disabled={editing?.tasks.find(t => t.id === task.id) === undefined ? false : true}
                                 >
-                                    Select
+                                    {editing?.tasks.find(t => t.id === task.id) ? 'Selected' : 'Select'}
                                 </Button>
                             </AccordionSummary>
                             <AccordionDetails>

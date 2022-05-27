@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import My404Page from './components/my404page/My404Page';
 import Profile from './components/profile/Profile';
 import Edit from './components/edit/Edit';
+import { load, setEditing, setUserId } from './state/edit/editSlice';
 
 function App() {
     const dispatch = useDispatch();
@@ -19,9 +20,24 @@ function App() {
     const userJSON = localStorage.getItem('user');
     const localUser = userJSON ? JSON.parse(userJSON) : null;
 
+    if (localUser && token) {
+        const editingTaskList = localStorage.getItem(
+            'taskList-' + localUser.id
+        );
+        const localTaskList = editingTaskList
+            ? JSON.parse(editingTaskList)
+            : null;
+
+        if (localTaskList) {
+            dispatch(setEditing({ taskList: localTaskList }));
+        }
+    }
+
     useEffect(() => {
         if (token && localUser) {
             dispatch(login({ user: localUser, token }));
+            dispatch(setUserId({ userId: localUser.id }));
+            dispatch(load());
         }
     }, [dispatch, token, localUser]);
 
@@ -42,7 +58,7 @@ function App() {
                         }
                     />
                     <Route
-                        path="my-tests"
+                        path="tasklists"
                         element={
                             <RequireAuth>
                                 <TaskLists />
@@ -51,7 +67,11 @@ function App() {
                     />
                     <Route
                         path="last-edited"
-                        element={<RequireAuth><Edit/></RequireAuth>}
+                        element={
+                            <RequireAuth>
+                                <Edit />
+                            </RequireAuth>
+                        }
                     />
                     <Route
                         path="profile"

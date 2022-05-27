@@ -16,11 +16,16 @@ const baseQuery = fetchBaseQuery({
 export const taskListsApiSlice = createApi({
     reducerPath: 'taskListsApi',
     baseQuery,
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+    tagTypes: ['Delete', 'Mutate'],
     endpoints: (builder) => ({
         getTaskLists: builder.query({
             query: () => ({
                 url: 'tasklists'
             }),
+            providesTags: [ 'Delete', 'Mutate' ],
             transformResponse: (response) => response.data
         }),
         getTaskList: builder.query({
@@ -40,21 +45,25 @@ export const taskListsApiSlice = createApi({
                 url: 'tasklists',
                 method: 'POST',
                 body
-            })
+            }),
+            invalidatesTags: ["Mutate"],
         }),
         deleteTaskList: builder.mutation({
             query: (id) => ({
-                url: `tasklists/${id}}`,
+                url: `tasklists/${id}`,
                 method: 'DELETE'
-            })
+            }),
+            invalidatesTags: ["Delete"],
         }),
         modifyTaskList: builder.mutation({
-            query: (id, body) => ({
-                url: `tasklists/${id}}`,
+            query: ({id, body}) => ({
+                url: `tasklists/${id}`,
                 method: 'PATCH',
                 body
-            })
+            }),
+            invalidatesTags: ["Mutate"],
         })
+        
     })
 });
 

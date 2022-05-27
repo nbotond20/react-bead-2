@@ -11,11 +11,12 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import { Link } from 'react-router-dom';
 import AuthStatus from '../auth/AuthStatus';
 import { logout, selectLoggedInUser } from '../../state/auth/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { selectEdit } from '../../state/edit/editSlice';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
 
 const linkStyle = {
     textDecoration: 'none',
@@ -24,7 +25,8 @@ const linkStyle = {
 
 const NavBar = () => {
     const dispatch = useDispatch();
-    let user = useSelector(selectLoggedInUser);
+    const user = useSelector(selectLoggedInUser);
+    const editing = useSelector(selectEdit);
 
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -48,7 +50,7 @@ const NavBar = () => {
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <AdbIcon
+                    <TaskAltIcon
                         sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
                     />
                     <Typography
@@ -112,21 +114,26 @@ const NavBar = () => {
                             </MenuItem>
                             <MenuItem onClick={handleCloseNavMenu}>
                                 <Typography textAlign="center">
-                                    <Link to={'/my-tests'} style={linkStyle}>
-                                        My Tests
+                                    <Link to={'/tasklists'} style={linkStyle}>
+                                        TaskLists
                                     </Link>
                                 </Typography>
                             </MenuItem>
-                            <MenuItem onClick={handleCloseNavMenu}>
-                                <Typography textAlign="center">
-                                    <Link to={'/last-edited'} style={linkStyle}>
-                                        Last Edited
-                                    </Link>
-                                </Typography>
-                            </MenuItem>
+                            {editing !== null && (
+                                <MenuItem onClick={handleCloseNavMenu}>
+                                    <Typography textAlign="center">
+                                        <Link
+                                            to={'/last-edited'}
+                                            style={linkStyle}
+                                        >
+                                            Last Edited
+                                        </Link>
+                                    </Typography>
+                                </MenuItem>
+                            )}
                         </Menu>
                     </Box>
-                    <AdbIcon
+                    <TaskAltIcon
                         sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}
                     />
                     <Typography
@@ -167,7 +174,7 @@ const NavBar = () => {
                                         Tasks
                                     </Button>
                                 </Link>
-                                <Link to={'/my-tests'} style={linkStyle}>
+                                <Link to={'/tasklists'} style={linkStyle}>
                                     <Button
                                         onClick={handleCloseNavMenu}
                                         sx={{
@@ -176,69 +183,71 @@ const NavBar = () => {
                                             display: 'block'
                                         }}
                                     >
-                                        My Tests
+                                        Tasklists
                                     </Button>
                                 </Link>
-                                <Link to={'/last-edited'} style={linkStyle}>
-                                    <Button
-                                        onClick={handleCloseNavMenu}
-                                        sx={{
-                                            my: 2,
-                                            color: 'white',
-                                            display: 'block'
-                                        }}
-                                    >
-                                        Last Edited
-                                    </Button>
-                                </Link>
+                                {editing !== null && (
+                                    <Link to={'/last-edited'} style={linkStyle}>
+                                        <Button
+                                            onClick={handleCloseNavMenu}
+                                            sx={{
+                                                my: 2,
+                                                color: 'white',
+                                                display: 'block'
+                                            }}
+                                        >
+                                            Last Edited
+                                        </Button>
+                                    </Link>
+                                )}
                             </>
                         ) : (
                             ''
                         )}
                     </Box>
                     {user ? (
-                        <Button
-                            onClick={() => {
-                                handleCloseNavMenu();
-                                dispatch(logout());
-                            }}
-                            sx={{
-                                my: 2,
-                                color: 'lightgray',
-                                display: 'block'
-                            }}
-                        >
-                            <Link to={'/'} style={linkStyle}>
+                        <Link to={'/'} style={linkStyle}>
+                            <Button
+                                onClick={() => {
+                                    handleCloseNavMenu();
+                                    dispatch(logout());
+                                }}
+                                sx={{
+                                    my: 2,
+                                    color: 'lightgray',
+                                    display: 'block'
+                                }}
+                            >
                                 Log out
-                            </Link>
-                        </Button>
+                            </Button>
+                        </Link>
                     ) : (
                         <>
-                            <Button
-                                onClick={handleCloseNavMenu}
-                                sx={{
-                                    my: 2,
-                                    color: 'lightgray',
-                                    display: 'block'
-                                }}
-                            >
-                                <Link to={'/login'} style={linkStyle}>
+                            <Link to={'/login'} style={linkStyle}>
+                                <Button
+                                    onClick={handleCloseNavMenu}
+                                    sx={{
+                                        my: 2,
+                                        color: 'lightgray',
+                                        display: 'block'
+                                    }}
+                                >
                                     Login
-                                </Link>
-                            </Button>
+                                </Button>
+                            </Link>
                             /
-                            <Button
-                                onClick={handleCloseNavMenu}
-                                sx={{
-                                    my: 2,
-                                    color: 'lightgray',
-                                    display: 'block'
-                                }}
-                            >
-                                <Link to={'/register'} style={linkStyle}>
+                            <Link to={'/register'} style={linkStyle}>
+                                <Button
+                                    onClick={handleCloseNavMenu}
+                                    sx={{
+                                        my: 2,
+                                        color: 'lightgray',
+                                        display: 'block'
+                                    }}
+                                >
                                     Register
-                                </Link>
-                            </Button>
+                                </Button>
+                            </Link>
                         </>
                     )}
 
@@ -249,7 +258,19 @@ const NavBar = () => {
                                 sx={{ p: 0 }}
                             >
                                 <Avatar
-                                    children={user ? `${user?.fullname.split(' ')[0][0]}${user?.fullname.split(' ')[1][0]}` : ''}
+                                    children={
+                                        user
+                                            ? `${
+                                                  user?.fullname.split(
+                                                      ' '
+                                                  )[0][0]
+                                              }${
+                                                  user?.fullname.split(
+                                                      ' '
+                                                  )[1][0]
+                                              }`
+                                            : ''
+                                    }
                                 />
                             </IconButton>
                         </Tooltip>

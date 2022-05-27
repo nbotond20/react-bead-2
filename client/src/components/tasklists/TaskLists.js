@@ -1,8 +1,20 @@
 import * as React from 'react';
 import Typography from '@mui/material/Typography';
-import { Alert, Button, Grow, Skeleton } from '@mui/material';
+import {
+    Alert,
+    AlertTitle,
+    Button,
+    Chip,
+    Dialog,
+    Grow,
+    Skeleton,
+    Snackbar
+} from '@mui/material';
 import PaginationRounded from '../utils/PaginationRounded';
-import { useGetTaskListsQuery } from '../../state/takskslists/tasksListsApiSlice';
+import {
+    useDeleteTaskListMutation,
+    useGetTaskListsQuery
+} from '../../state/takskslists/tasksListsApiSlice';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
@@ -15,15 +27,35 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useGetTasksQuery } from '../../state/tasks/tasksApiSlice';
 import ReactTimeAgo from 'react-time-ago';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectLoggedInUser } from '../../state/auth/authSlice';
 import { v4 } from 'uuid';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import useDocumentTitle from '../utils/useDocumentTitle';
 import CardContainer from '../utils/CardContainer';
+import { useNavigate } from 'react-router-dom';
+import { clear, selectEdit, setEditing } from '../../state/edit/editSlice';
 
-const Row = ({ row, index, tasks, children }) => {
+const Row = ({
+    row,
+    index,
+    tasks,
+    children,
+    handleOpenFromRow,
+    handleDeleteFromRow
+}) => {
     const [open, setOpen] = React.useState(false);
+
+    function compare(a, b) {
+        if (a.title < b.title) {
+            return -1;
+        }
+        if (a.title > b.title) {
+            return 1;
+        }
+        return 0;
+    }
 
     return (
         <>
@@ -62,21 +94,26 @@ const Row = ({ row, index, tasks, children }) => {
                                 }}
                             >
                                 {row.status === 'published'
-                                    ? 'Published'
-                                    : 'Draft'}
+                                    ?  <Chip label="Published" color="success" variant="outlined"/>
+                                    : <Chip label="Draft" color="primary" variant="outlined"/>}
                             </TableCell>
                             <TableCell align="center">
                                 {row.tasks?.length}
                             </TableCell>
                             <TableCell align="right">
-                                <ReactTimeAgo date={new Date(row.updatedAt)} />
+                                {new Date(row.createdAt).toLocaleString()}
                             </TableCell>
                             <TableCell align="right">
-                                <ReactTimeAgo date={new Date(row.createdAt)} />
+                                <ReactTimeAgo date={new Date(row.updatedAt)} />
                             </TableCell>
                             <TableCell align="center" sx={{ padding: '0' }}>
-                                <Button>
+                                <Button onClick={() => handleOpenFromRow(row)}>
                                     <EditIcon />
+                                </Button>
+                                <Button
+                                    onClick={() => handleDeleteFromRow(row.id)}
+                                >
+                                    <DeleteIcon color="error" />
                                 </Button>
                             </TableCell>
                         </TableRow>
@@ -92,6 +129,11 @@ const Row = ({ row, index, tasks, children }) => {
                                         variant="h6"
                                         gutterBottom
                                         component="div"
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between'
+                                        }}
                                     >
                                         Description
                                     </Typography>
@@ -128,44 +170,49 @@ const Row = ({ row, index, tasks, children }) => {
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {row.tasks.map((task) => {
-                                                return (
-                                                    <TableRow key={task.id}>
-                                                        <TableCell
-                                                            component="th"
-                                                            scope="row"
-                                                            sx={{
-                                                                color: 'text.secondary'
-                                                            }}
-                                                        >
-                                                            {task.title}
-                                                        </TableCell>
-                                                        <TableCell
-                                                            sx={{
-                                                                color: 'text.secondary'
-                                                            }}
-                                                        >
-                                                            {task.description}
-                                                        </TableCell>
-                                                        <TableCell
-                                                            align="right"
-                                                            sx={{
-                                                                color: 'text.secondary'
-                                                            }}
-                                                        >
-                                                            {task.notes}
-                                                        </TableCell>
-                                                        <TableCell
-                                                            align="right"
-                                                            sx={{
-                                                                color: 'text.secondary'
-                                                            }}
-                                                        >
-                                                            {task.points}
-                                                        </TableCell>
-                                                    </TableRow>
-                                                );
-                                            })}
+                                            {row.tasks
+                                                .map((e) => e)
+                                                .sort(compare)
+                                                .map((task) => {
+                                                    return (
+                                                        <TableRow key={task.id}>
+                                                            <TableCell
+                                                                component="th"
+                                                                scope="row"
+                                                                sx={{
+                                                                    color: 'text.secondary'
+                                                                }}
+                                                            >
+                                                                {task.title}
+                                                            </TableCell>
+                                                            <TableCell
+                                                                sx={{
+                                                                    color: 'text.secondary'
+                                                                }}
+                                                            >
+                                                                {
+                                                                    task.description
+                                                                }
+                                                            </TableCell>
+                                                            <TableCell
+                                                                align="right"
+                                                                sx={{
+                                                                    color: 'text.secondary'
+                                                                }}
+                                                            >
+                                                                {task.notes}
+                                                            </TableCell>
+                                                            <TableCell
+                                                                align="right"
+                                                                sx={{
+                                                                    color: 'text.secondary'
+                                                                }}
+                                                            >
+                                                                {task.points}
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    );
+                                                })}
                                             <TableRow key={v4()}>
                                                 <TableCell scope="row" />
                                                 <TableCell />
@@ -174,7 +221,8 @@ const Row = ({ row, index, tasks, children }) => {
                                                     align="right"
                                                     sx={{ fontWeight: 'bold' }}
                                                 >
-                                                    Summary: {row.tasks.reduce(
+                                                    Summary:{' '}
+                                                    {row.tasks.reduce(
                                                         (acc, task) =>
                                                             acc + task.points,
                                                         0
@@ -194,19 +242,48 @@ const Row = ({ row, index, tasks, children }) => {
 };
 
 const TaskLists = () => {
-    useDocumentTitle('Task-Manager - Tests');
+    useDocumentTitle('Task-Manager - Tasklists');
     const user = useSelector(selectLoggedInUser);
+
     const itemPerPage = 10;
     const loadingTime = 1500;
-
     const { data, isLoading } = useGetTaskListsQuery();
+
     const [currentData, setCurrentData] = React.useState(
         data
             ? data
                   .filter((task) => task.userId === user.id)
+                  .sort(
+                      (a, b) =>
+                          new Date(b.updatedAt).getTime() -
+                          new Date(a.updatedAt).getTime()
+                  )
                   .slice(0, itemPerPage)
             : []
     );
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const handleNewTaskList = () => {
+        dispatch(
+            setEditing({
+                taskList: {
+                    id: v4(),
+                    title: null,
+                    description: null,
+                    status: 'draft',
+                    userId: user.id,
+                    tasks: []
+                }
+            })
+        );
+        navigate('/last-edited');
+    };
+
+    const handleEdit = (taskList) => {
+        dispatch(setEditing({ taskList }));
+        navigate('/last-edited');
+    };
 
     const { data: tasks } = useGetTasksQuery();
 
@@ -222,6 +299,11 @@ const TaskLists = () => {
             data
                 ? data
                       .filter((task) => task.userId === user.id)
+                      .sort(
+                          (a, b) =>
+                              new Date(b.updatedAt).getTime() -
+                              new Date(a.updatedAt).getTime()
+                      )
                       .slice(0, itemPerPage)
                 : []
         );
@@ -234,6 +316,11 @@ const TaskLists = () => {
                 ? [
                       ...data
                           .filter((task) => task.userId === user.id)
+                          .sort(
+                              (a, b) =>
+                                  new Date(b.updatedAt).getTime() -
+                                  new Date(a.updatedAt).getTime()
+                          )
                           .slice(
                               value * itemPerPage - itemPerPage,
                               value * itemPerPage
@@ -243,8 +330,67 @@ const TaskLists = () => {
         );
     };
 
+    const [isOpen, setIsOpen] = React.useState(false);
+    const handleClose = () => {
+        setIsOpen(false);
+    };
+
+    const editing = useSelector(selectEdit);
+    const handleOpen = () => {
+        if (editing !== null) {
+            setIsOpen(true);
+        } else {
+            handleNewTaskList();
+        }
+    };
+
+    const [dataFromRow, setDataFromRow] = React.useState(null);
+    const handleNewOrEdit = () => {
+        if (dataFromRow === null) {
+            handleNewTaskList();
+        } else {
+            handleEdit(dataFromRow);
+        }
+    };
+
+    const handleOpenFromRow = (taskList) => {
+        setDataFromRow(taskList);
+        if (editing !== null) {
+            setIsOpen(true);
+        } else {
+            handleEdit(taskList);
+        }
+    };
+
+    const [deleteTaskList] = useDeleteTaskListMutation();
+    const handleDeleteFromRow = async (taskListID) => {
+        await deleteTaskList(taskListID);
+        if(editing.id === taskListID) {
+            dispatch(clear());
+        }
+        setOpenSuccesDeleteAlert(true);
+    };
+
+    const [openSuccesDeleteAlert, setOpenSuccesDeleteAlert] =
+        React.useState(false);
+
     return (
         <CardContainer>
+            <Snackbar
+                open={openSuccesDeleteAlert}
+                autoHideDuration={6000}
+                onClose={(event, reason) => {
+                    if (reason === 'clickaway') {
+                        return;
+                    }
+
+                    setOpenSuccesDeleteAlert(false);
+                }}
+            >
+                <Alert severity="success" sx={{ width: '100%' }}>
+                    Successfully deleted the tasklist!
+                </Alert>
+            </Snackbar>
             <h1
                 style={{
                     textAlign: 'center',
@@ -252,7 +398,7 @@ const TaskLists = () => {
                     position: 'relative'
                 }}
             >
-                My Tests
+                Tasklists
                 <Button
                     variant="contained"
                     color="primary"
@@ -260,14 +406,68 @@ const TaskLists = () => {
                         position: 'absolute',
                         right: '0'
                     }}
+                    onClick={() => handleOpen()}
                 >
-                    New Test
+                    New Tasklist
                 </Button>
+                <Dialog
+                    open={isOpen}
+                    onClose={() => handleClose()}
+                    PaperProps={{
+                        style: {
+                            backgroundColor: 'transparent',
+                            boxShadow: 'none'
+                        }
+                    }}
+                >
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexDirection: 'column',
+                            gap: '1em',
+                            backgroundColor: 'transparent',
+                            padding: '1em'
+                        }}
+                    >
+                        <Alert severity="warning">
+                            <AlertTitle>Warning</AlertTitle>
+                            You already have a tasklist selected for editing!
+                            You <strong>will lost</strong> your pervious work if
+                            you proceed! <br />
+                        </Alert>
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                gap: '1em',
+                                backgroundColor: 'transparent'
+                            }}
+                        >
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleNewOrEdit()}
+                            >
+                                OK
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleClose()}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </div>
+                </Dialog>
             </h1>
 
             {currentData?.length <= 0 && !loading && (
                 <Alert severity="warning">
-                    There are no test available - create one!
+                    There are no tasklists available - create one!
                 </Alert>
             )}
             <Table
@@ -284,8 +484,8 @@ const TaskLists = () => {
                         <TableCell>Title</TableCell>
                         <TableCell align="center">Status</TableCell>
                         <TableCell align="center">Task Number</TableCell>
-                        <TableCell align="right">Modified</TableCell>
                         <TableCell align="right">Created</TableCell>
+                        <TableCell align="right">Modified</TableCell>
                         <TableCell align="center"></TableCell>
                     </TableRow>
                 </TableHead>
@@ -297,6 +497,9 @@ const TaskLists = () => {
                                 row={row}
                                 index={index}
                                 tasks={tasks}
+                                handleEdit={handleEdit}
+                                handleOpenFromRow={handleOpenFromRow}
+                                handleDeleteFromRow={handleDeleteFromRow}
                             />
                         ))}
                     {loading && (

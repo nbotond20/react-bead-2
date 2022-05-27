@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { selectLoggedInUser } from '../../state/auth/authSlice';
 import CardContainer from '../utils/CardContainer';
 import useDocumentTitle from '../utils/useDocumentTitle';
@@ -12,9 +13,14 @@ const Home = () => {
         <CardContainer>
             <h1 style={{ textAlign: 'center' }}>
                 Welcome{' '}
-                <span style={{ color: 'rgb(25,118,210)' }}>
-                    {user !== null ? `${user.fullname}` : ''}
-                </span>{' '}
+                <Link
+                    to="/profile"
+                    style={{ textDecoration: 'none', color: 'inherit' }}
+                >
+                    <span style={{ color: 'rgb(25,118,210)' }}>
+                        {user !== null ? `${user.fullname}` : ''}
+                    </span>
+                </Link>{' '}
                 to the home page of the Task Manager!
             </h1>
             <h1>Feladatsorok alkalmazás</h1>

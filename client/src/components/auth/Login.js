@@ -7,6 +7,7 @@ import { useLoginMutation } from '../../state/auth/authApiSlice';
 import style from './css/Login.module.css';
 import CenterContainer from '../utils/CenterContainer';
 import useDocumentTitle from '../utils/useDocumentTitle';
+import { setUserId, load } from '../../state/edit/editSlice';
 
 const Login = () => {
     useDocumentTitle('Task-Manager - Login');
@@ -50,10 +51,12 @@ const Login = () => {
                     token: result.accessToken
                 })
             );
+            dispatch(setUserId({ userId: result.user.id }));
+            dispatch(load());
             navigate('/', { replace: true });
         } catch (err) {
             newErrors.username = 'Login error';
-            setErrors({...newErrors});
+            setErrors({ ...newErrors });
         }
     };
 
