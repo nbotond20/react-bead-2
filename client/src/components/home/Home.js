@@ -356,84 +356,84 @@ const Home = () => {
             <h2>Pontozás</h2>
             <p>Összesen 30 pont érhető el.</p>
             <ul>
-                <li>[ ] React használata (kötelező)</li>
-                <li>[ ] Redux használata (kötelező)</li>
+                <li>[x] React használata (kötelező)</li>
+                <li>[x] Redux használata (kötelező)</li>
                 <li>
-                    [ ] Navigáció megfelelően változik a be- és kijelentkezésnek
+                    [x] Navigáció megfelelően változik a be- és kijelentkezésnek
                     megfelelően (1pt)
                 </li>
-                <li>[ ] Főoldal megjelenik (1pt)</li>
+                <li>[x] Főoldal megjelenik (1pt)</li>
                 <li>
-                    [ ] Feladatbank: megjelennek a feladatok a megfelelő
+                    [x] Feladatbank: megjelennek a feladatok a megfelelő
                     tartalommal (1pt)
                 </li>
                 <li>
-                    [ ] Feladatbank: 10 feladat jelenik meg, előre-hátra
+                    [x] Feladatbank: 10 feladat jelenik meg, előre-hátra
                     lapozással (2pt)
                 </li>
                 <li>
-                    [ ] Feladatbank: feladatra kattintva megjelenik a feladat
+                    [x] Feladatbank: feladatra kattintva megjelenik a feladat
                     leírása (2pt)
                 </li>
                 <li>
-                    [ ] Feladatbank: bejelentkezett felhasználónál ha a feladat
+                    [x] Feladatbank: bejelentkezett felhasználónál ha a feladat
                     nincs kiválasztva, akkor megjelenik a &quot;Kiválaszt&quot;
                     gomb (1pt)
                 </li>
                 <li>
-                    [ ] Feladatbank: bejelentkezett felhasználónál ha a feladat
+                    [x] Feladatbank: bejelentkezett felhasználónál ha a feladat
                     már ki van választva, akkor megjelenik a
                     &quot;Kiválasztva&quot; felirat (1pt)
                 </li>
                 <li>
-                    [ ] Feladatbank: &quot;Kiválaszt&quot; gomb helyes működése
+                    [x] Feladatbank: &quot;Kiválaszt&quot; gomb helyes működése
                     (2pt)
                 </li>
-                <li>[ ] Regisztráció működik (1pt)</li>
-                <li>[ ] Bejelentkezés működik (1pt)</li>
-                <li>[ ] Feladatsoraim: csak bejelentkezve érhető el (1pt)</li>
+                <li>[x] Regisztráció működik (1pt)</li>
+                <li>[x] Bejelentkezés működik (1pt)</li>
+                <li>[x] Feladatsoraim: csak bejelentkezve érhető el (1pt)</li>
                 <li>
-                    [ ] Feladatsoraim: a felhasználóhoz tartozó feladatsorok
+                    [x] Feladatsoraim: a felhasználóhoz tartozó feladatsorok
                     megjelennek (1pt)
                 </li>
                 <li>
-                    [ ] Feladatsoraim: feladatsorra kattintva a feladatsor
+                    [x] Feladatsoraim: feladatsorra kattintva a feladatsor
                     részletei megjelennek (1pt)
                 </li>
                 <li>
-                    [ ] Feladatsoraim: &quot;Szerkeszt&quot; gomb helyes
+                    [x] Feladatsoraim: &quot;Szerkeszt&quot; gomb helyes
                     működése (1pt)
                 </li>
                 <li>
-                    [ ] Feladatsoraim: &quot;Új feladatsor&quot; gomb helyes
+                    [x] Feladatsoraim: &quot;Új feladatsor&quot; gomb helyes
                     működése (1pt)
                 </li>
                 <li>
-                    [ ] Szerkesztett feladatsor: csak bejelentkezve érhető el és
+                    [x] Szerkesztett feladatsor: csak bejelentkezve érhető el és
                     ha van szerkesztésre jelölt feladatsor (1pt)
                 </li>
                 <li>
-                    [ ] Szerkesztett feladatsor: a megjelenített adatok
+                    [x] Szerkesztett feladatsor: a megjelenített adatok
                     megfelelőek (1pt)
                 </li>
                 <li>
-                    [ ] Szerkesztett feladatsor: a jelölt adatok szerkeszthetők
+                    [x] Szerkesztett feladatsor: a jelölt adatok szerkeszthetők
                     (2pt)
                 </li>
                 <li>
-                    [ ] Szerkesztett feladatsor: &quot;Mentés&quot; gomb helyes
+                    [x] Szerkesztett feladatsor: &quot;Mentés&quot; gomb helyes
                     működése (2pt)
                 </li>
                 <li>
-                    [ ] Szerkesztett feladatsor: &quot;Szerkesztés
+                    [x] Szerkesztett feladatsor: &quot;Szerkesztés
                     lezárása&quot; gomb helyes működése (2pt)
                 </li>
                 <li>
-                    [ ] Profil: csak bejelentkezve érhető el, megfelelő
+                    [x] Profil: csak bejelentkezve érhető el, megfelelő
                     tartalommal (1pt)
                 </li>
-                <li>[ ] Profil: Kijelentkezés gomb működik (1pt)</li>
-                <li>[ ] Igényes megjelenés (2pt)</li>
+                <li>[x] Profil: Kijelentkezés gomb működik (1pt)</li>
+                <li>[x] Igényes megjelenés (2pt)</li>
                 <li>[ ] 1 hét késés (-3pt)</li>
                 <li>[ ] 2 hét késés (-6pt)</li>
             </ul>
