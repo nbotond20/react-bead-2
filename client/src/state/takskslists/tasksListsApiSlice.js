@@ -25,8 +25,8 @@ export const taskListsApiSlice = createApi({
             query: () => ({
                 url: 'tasklists'
             }),
-            providesTags: [ 'Delete', 'Mutate' ],
-            transformResponse: (response) => response.data
+            transformResponse: (response) => response.data,
+            providesTags: ['Delete', 'Mutate']
         }),
         getTaskList: builder.query({
             query: (id) => ({
@@ -46,24 +46,23 @@ export const taskListsApiSlice = createApi({
                 method: 'POST',
                 body
             }),
-            invalidatesTags: ["Mutate"],
+            invalidatesTags: ['Mutate']
         }),
         deleteTaskList: builder.mutation({
             query: (id) => ({
                 url: `tasklists/${id}`,
                 method: 'DELETE'
             }),
-            invalidatesTags: ["Delete"],
+            invalidatesTags: ['Delete']
         }),
         modifyTaskList: builder.mutation({
-            query: ({id, body}) => ({
+            query: ({ id, body }) => ({
                 url: `tasklists/${id}`,
                 method: 'PATCH',
                 body
             }),
-            invalidatesTags: ["Mutate"],
+            invalidatesTags: ['Mutate']
         })
-        
     })
 });
 

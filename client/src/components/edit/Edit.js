@@ -4,9 +4,7 @@ import {
     Alert,
     Button,
     Chip,
-    FilledInput,
     FormControl,
-    InputLabel,
     Paper,
     Snackbar,
     Switch,
@@ -15,121 +13,113 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow
+    TableRow,
+    TextField
 } from '@mui/material';
 import CardContainer from '../utils/CardContainer';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ReactTimeAgo from 'react-time-ago';
 import {
     useCreateTaskListMutation,
     useModifyTaskListMutation
 } from '../../state/takskslists/tasksListsApiSlice';
 import { Link, useNavigate } from 'react-router-dom';
+import { Controller, useForm } from 'react-hook-form';
 
 const Edit = () => {
     const dispatch = useDispatch();
     const editing = useSelector(selectEdit);
 
-    const [state, setSate] = useState({
-        id: {
-            value: editing?.id ? editing.id : null
-        },
-        title: {
-            value: editing?.title ? editing.title : '',
-            error: ''
-        },
-        description: {
-            value: editing?.description ? editing.description : '',
-            error: ''
-        },
-        status: {
-            value: editing?.status ? editing.status : '',
-            error: ''
-        },
-        createdAt: {
-            value: editing?.createdAt ? editing.createdAt : '',
-            error: ''
-        },
-        updatedAt: {
-            value: editing?.updatedAt ? editing.updatedAt : '',
-            error: ''
-        },
-        maxPoints: {
-            value: editing?.tasks ? 0 : 0,
-            error: ''
-        },
-        tasks: editing?.tasks
-            ? editing.tasks.map((e) => ({
-                  id: e.id,
-                  title: e.title,
-                  description: e.description,
-                  notes: e.notes,
-                  points: e.points
-              }))
-            : []
-    });
+    const tasks = editing?.tasks
+        ? editing?.tasks?.map((e) => ({
+              id: e.id,
+              title: e.title,
+              description: e.description,
+              notes: e.notes,
+              points: e.points
+          }))
+        : [];
 
     const [createTaskList] = useCreateTaskListMutation();
     const [modifyTaskList] = useModifyTaskListMutation();
 
     const [openSuccessAlert, setOpenSuccessAlert] = useState(false);
-
-    const [error, setError] = useState(false);
-
+    const [openErrorAlert, setOpenErrorAlert] = useState(false);
     const navigate = useNavigate();
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (state.title.value !== '') {
-            if (state.createdAt.value === '') {
-                await createTaskList({
-                    strategy: 'local',
-                    title: state.title.value,
-                    description: state.description.value,
-                    status: state.status.value,
-                    tasks: state.tasks
-                }).unwrap();
-            } else {
-                await modifyTaskList({
-                    id: editing.id,
-                    body: {
-                        strategy: 'local',
-                        title: state.title.value,
-                        description: state.description.value,
-                        status: state.status.value,
-                        tasks: state.tasks
-                    }
-                }).unwrap();
-            }
-            setOpenSuccessAlert(true);
-            dispatch(clear());
-            setTimeout(() => {
-                navigate('/tasklists');
-            }, 1000);
-        } else {
-            setError(true);
+
+    const { handleSubmit, control, watch, getValues } = useForm({
+        defaultValues: {
+            title: editing?.title ? editing?.title : '',
+            description: editing?.description ? editing?.description : '',
+            status: editing?.status ? editing?.status === 'published' : false
         }
+    });
+
+    const onError = (errors, e) => {
+        setOpenErrorAlert(true);
     };
 
-    const handleToggle = (e) => {
-        const s = !e.target.checked ? 'draft' : 'published';
-        setSate({ ...state, status: { ...state.status, value: s } });
+    const onSubmit = async (data) => {
+        if (!editing?.createdAt) {
+            await createTaskList({
+                strategy: 'local',
+                title: getValues('title'),
+                description: getValues('description'),
+                status: getValues('status') ? 'published' : 'draft',
+                tasks: tasks?.map((e) => ({
+                    id: e.id,
+                    title: e.title,
+                    description: e.description,
+                    notes: getValues(`task-notes[${e.id}]`),
+                    points: parseInt(getValues(`task-points[${e.id}]`))
+                }))
+            }).unwrap();
+        } else {
+            await modifyTaskList({
+                id: editing?.id,
+                body: {
+                    strategy: 'local',
+                    title: getValues('title'),
+                    description: getValues('description'),
+                    status: getValues('status') ? 'published' : 'draft',
+                    tasks: tasks?.map((e) => ({
+                        id: e.id,
+                        title: e.title,
+                        description: e.description,
+                        notes: getValues(`task-notes[${e.id}]`),
+                        points: parseInt(getValues(`task-points[${e.id}]`))
+                    }))
+                }
+            }).unwrap();
+        }
+        setOpenSuccessAlert(true);
+        setTimeout(() => {
+            navigate('/tasklists');
+            dispatch(clear());
+        }, 1000);
     };
 
-    useEffect(() => {
+    const onCancel = () => {
         dispatch(
             updateTasklist({
                 taskList: {
-                    id: state.id.value,
-                    title: state.title.value,
-                    description: state.description.value,
-                    status: state.status.value,
-                    createdAt: state.createdAt.value,
-                    updatedAt: state.updatedAt.value,
-                    tasks: state.tasks
+                    id: editing?.id,
+                    title: getValues('title'),
+                    description: getValues('description'),
+                    status: getValues('status') ? 'published' : 'draft',
+                    createdAt: editing?.createdAt,
+                    updatedAt: editing?.updatedAt,
+                    tasks: tasks?.map((e) => ({
+                        id: e.id,
+                        title: e.title,
+                        description: e.description,
+                        notes: getValues(`task-notes[${e.id}]`),
+                        points: parseInt(getValues(`task-points[${e.id}]`))
+                    }))
                 }
             })
         );
-    }, [state, dispatch]);
+    };
 
     return (
         <>
@@ -140,18 +130,34 @@ const Edit = () => {
                     if (reason === 'clickaway') {
                         return;
                     }
-
                     setOpenSuccessAlert(false);
                 }}
             >
                 <Alert severity="success" sx={{ width: '100%' }}>
-                    {state.createdAt.value
+                    {editing?.createdAt
                         ? 'Successfully updated the tasklist!'
                         : 'Successfully created the tasklist!'}
                 </Alert>
             </Snackbar>
+            <Snackbar
+                open={openErrorAlert}
+                autoHideDuration={6000}
+                onClose={(event, reason) => {
+                    if (reason === 'clickaway') {
+                        return;
+                    }
+
+                    setOpenErrorAlert(false);
+                }}
+            >
+                <Alert severity="error" sx={{ width: '100%' }}>
+                    {editing?.createdAt
+                        ? 'Error updating the tasklist! You must fill in the title!'
+                        : 'Error creating the tasklist! You must fill in the title!'}
+                </Alert>
+            </Snackbar>
             <CardContainer>
-                <form onSubmit={(e) => handleSubmit(e)}>
+                <form onSubmit={handleSubmit(onSubmit, onError)}>
                     <div
                         style={{
                             display: 'flex',
@@ -168,52 +174,54 @@ const Edit = () => {
                                 width: '80%'
                             }}
                         >
-                            <FormControl fullWidth variant="filled">
-                                <InputLabel htmlFor="title">Title</InputLabel>
-                                <FilledInput
-                                    id="title"
-                                    value={state.title.value}
-                                    name="title"
-                                    error={error}
-                                    required
-                                    onChange={(e) =>
-                                        setSate({
-                                            ...state,
-                                            title: {
-                                                ...state.title,
-                                                value: e.target.value
+                            <Controller
+                                name="title"
+                                control={control}
+                                render={({
+                                    field: { onChange, value },
+                                    fieldState: { error }
+                                }) => (
+                                    <FormControl fullWidth variant="filled">
+                                        <TextField
+                                            label="Title"
+                                            variant="filled"
+                                            value={value}
+                                            onChange={onChange}
+                                            error={!!error}
+                                            helperText={
+                                                error ? error.message : null
                                             }
-                                        })
-                                    }
-                                />
-                            </FormControl>
-                            <FormControl
-                                fullWidth
-                                variant="filled"
+                                        />
+                                    </FormControl>
+                                )}
+                                rules={{ required: 'Title is required' }}
+                            />
+                            <Controller
                                 sx={{
                                     marginTop: '1rem'
                                 }}
-                            >
-                                <InputLabel htmlFor="description">
-                                    Description
-                                </InputLabel>
-                                <FilledInput
-                                    id="description"
-                                    value={state.description.value}
-                                    name="description"
-                                    multiline
-                                    maxRows={5}
-                                    onChange={(e) =>
-                                        setSate({
-                                            ...state,
-                                            description: {
-                                                ...state.description,
-                                                value: e.target.value
+                                name="description"
+                                control={control}
+                                render={({
+                                    field: { onChange, value },
+                                    fieldState: { error }
+                                }) => (
+                                    <FormControl fullWidth variant="filled">
+                                        <TextField
+                                            label="Description"
+                                            variant="filled"
+                                            value={value}
+                                            onChange={onChange}
+                                            error={!!error}
+                                            multiline
+                                            maxRows={5}
+                                            helperText={
+                                                error ? error.message : null
                                             }
-                                        })
-                                    }
-                                />
-                            </FormControl>
+                                        />
+                                    </FormControl>
+                                )}
+                            />
                         </div>
 
                         <div
@@ -227,12 +235,14 @@ const Edit = () => {
                                 marginLeft: '1  em'
                             }}
                         >
-                            <Switch
-                                checked={state.status.value === 'published'}
+                            <Controller
                                 name="status"
-                                onChange={handleToggle}
+                                control={control}
+                                render={({ field }) => (
+                                    <Switch {...field} checked={field.value} />
+                                )}
                             />
-                            {state.status.value === 'published' ? (
+                            {watch('status') ? (
                                 <Chip
                                     label="Published"
                                     color="success"
@@ -258,7 +268,7 @@ const Edit = () => {
                     >
                         <span>
                             Created at:
-                            {state.createdAt.value && (
+                            {editing?.createdAt && (
                                 <span
                                     style={{
                                         color: '#666'
@@ -266,14 +276,14 @@ const Edit = () => {
                                 >
                                     {' ' +
                                         new Date(
-                                            state.createdAt.value
+                                            editing?.createdAt
                                         ).toLocaleString()}
                                 </span>
                             )}
                         </span>
                         <span>
                             Updated at:
-                            {state.updatedAt.value && (
+                            {editing?.updatedAt && (
                                 <span
                                     style={{
                                         color: '#666'
@@ -281,7 +291,7 @@ const Edit = () => {
                                 >
                                     {' '}
                                     <ReactTimeAgo
-                                        date={new Date(state.updatedAt.value)}
+                                        date={new Date(editing?.updatedAt)}
                                     />
                                 </span>
                             )}
@@ -297,7 +307,7 @@ const Edit = () => {
                         }}
                     >
                         <TableContainer component={Paper}>
-                            {state?.tasks.length > 0 ? (
+                            {tasks?.length > 0 ? (
                                 <Table aria-label="simple table">
                                     <TableHead>
                                         <TableRow>
@@ -316,8 +326,8 @@ const Edit = () => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {state?.tasks &&
-                                            state.tasks.map((task) => (
+                                        {tasks &&
+                                            tasks?.map((task) => (
                                                 <TableRow key={task.id}>
                                                     <TableCell align="left">
                                                         {task.title}
@@ -326,78 +336,87 @@ const Edit = () => {
                                                         {task.description}
                                                     </TableCell>
                                                     <TableCell align="center">
-                                                        <FormControl variant="filled">
-                                                            <InputLabel htmlFor="notes">
-                                                                Notes
-                                                            </InputLabel>
-                                                            <FilledInput
-                                                                id="notes"
-                                                                value={
-                                                                    task.notes
+                                                        <Controller
+                                                            name={`task-notes[${task.id}]`}
+                                                            control={control}
+                                                            defaultValue={
+                                                                task.notes
+                                                            }
+                                                            render={({
+                                                                field: {
+                                                                    onChange,
+                                                                    value
+                                                                },
+                                                                fieldState: {
+                                                                    error
                                                                 }
-                                                                name="notes"
-                                                                multiline
-                                                                maxRows={3}
-                                                                onChange={(e) =>
-                                                                    setSate({
-                                                                        ...state,
-                                                                        tasks: state.tasks.map(
-                                                                            (
-                                                                                t
-                                                                            ) =>
-                                                                                t.id ===
-                                                                                task.id
-                                                                                    ? {
-                                                                                          ...t,
-                                                                                          notes: e
-                                                                                              .target
-                                                                                              .value
-                                                                                      }
-                                                                                    : t
-                                                                        )
-                                                                    })
-                                                                }
-                                                            />
-                                                        </FormControl>
+                                                            }) => (
+                                                                <FormControl variant="filled">
+                                                                    <TextField
+                                                                        label="Notes"
+                                                                        variant="filled"
+                                                                        value={
+                                                                            value
+                                                                        }
+                                                                        onChange={
+                                                                            onChange
+                                                                        }
+                                                                        error={
+                                                                            !!error
+                                                                        }
+                                                                        multiline
+                                                                        maxRows={
+                                                                            3
+                                                                        }
+                                                                        helperText={
+                                                                            error
+                                                                                ? error.message
+                                                                                : null
+                                                                        }
+                                                                    />
+                                                                </FormControl>
+                                                            )}
+                                                        />
                                                     </TableCell>
                                                     <TableCell align="center">
-                                                        <FormControl variant="filled">
-                                                            <InputLabel htmlFor="points">
-                                                                Points
-                                                            </InputLabel>
-                                                            <FilledInput
-                                                                id="points"
-                                                                value={
-                                                                    task.points
+                                                        <Controller
+                                                            name={`task-points[${task.id}]`}
+                                                            control={control}
+                                                            defaultValue={
+                                                                task.points
+                                                            }
+                                                            render={({
+                                                                field: {
+                                                                    onChange,
+                                                                    value
+                                                                },
+                                                                fieldState: {
+                                                                    error
                                                                 }
-                                                                name="points"
-                                                                onChange={(e) =>
-                                                                    setSate({
-                                                                        ...state,
-                                                                        tasks: state.tasks.map(
-                                                                            (
-                                                                                t
-                                                                            ) =>
-                                                                                t.id ===
-                                                                                task.id
-                                                                                    ? {
-                                                                                          ...t,
-                                                                                          points: e
-                                                                                              .target
-                                                                                              .value
-                                                                                              ? parseInt(
-                                                                                                    e
-                                                                                                        .target
-                                                                                                        .value
-                                                                                                )
-                                                                                              : 0
-                                                                                      }
-                                                                                    : t
-                                                                        )
-                                                                    })
-                                                                }
-                                                            />
-                                                        </FormControl>
+                                                            }) => (
+                                                                <FormControl variant="filled">
+                                                                    <TextField
+                                                                        label="Points"
+                                                                        variant="filled"
+                                                                        type="number"
+                                                                        value={
+                                                                            value
+                                                                        }
+                                                                        onChange={
+                                                                            onChange
+                                                                        }
+                                                                        error={
+                                                                            !!error
+                                                                        }
+                                                                        helperText={
+                                                                            error
+                                                                                ? error.message
+                                                                                : null
+                                                                        }
+                                                                    />
+                                                                </FormControl>
+                                                            )}
+                                                        />
                                                     </TableCell>
                                                 </TableRow>
                                             ))}
@@ -406,7 +425,13 @@ const Edit = () => {
                             ) : (
                                 <Alert severity="warning">
                                     There are no tasks added yet -{' '}
-                                    <Link to="/tasks">add one</Link>!
+                                    <Link
+                                        to="/tasks"
+                                        onClick={() => onCancel()}
+                                    >
+                                        add one
+                                    </Link>
+                                    !
                                 </Alert>
                             )}
                         </TableContainer>
@@ -426,7 +451,10 @@ const Edit = () => {
                         </Button>
                         <Button
                             variant="contained"
-                            onClick={() => navigate('/tasklists')}
+                            onClick={() => {
+                                navigate('/tasklists');
+                                onCancel();
+                            }}
                         >
                             Back
                         </Button>

@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import My404Page from './components/my404page/My404Page';
 import Profile from './components/profile/Profile';
 import Edit from './components/edit/Edit';
+import Test from './components/edit/Test';
 import { load, setEditing, setUserId } from './state/edit/editSlice';
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
                 <NavBar />
                 <Routes>
                     <Route path="/" element={<Home />} />
+                    <Route path="/test" element={<Test />} />
                     <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
                     <Route

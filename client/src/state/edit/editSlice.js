@@ -48,7 +48,8 @@ const editSlice = createSlice({
         clear(state){
             state.taskList = null;
             localStorage.removeItem(`taskList-${state.userId}`);
-        }
+        },
+        
     }
 });
 
